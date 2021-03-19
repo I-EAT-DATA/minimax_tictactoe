@@ -1,7 +1,5 @@
 import random
 
-tictactoe_board = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-
 lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -17,7 +15,7 @@ def player(board):
     return 'O' if board.count('X') > board.count('O') else 'X'
 
 def actions(board):
-    return [sn for sn, sv in enumerate(board) if sv == ' ']
+    return [sn for sn, sv in enumerate(board) if sv.isdigit()]
 
 def result(board, action):
     result = board[:]
@@ -27,16 +25,48 @@ def result(board, action):
 def terminal(board, lines, count):
     # all squares are filled
     if count == 8:
+        return True
+
+    # somebody won
+    for l in range(8):
+        [a, b, c] = lines[l]
+        if not board[a].isdigit() and board[a] == board[b] and board[a] == board[c]:
+            return True
+
+def utility(board, lines, count):
+    # all squares are filled
+    if count == 8:
         return 0
 
     # somebody won
     for l in range(8):
         [a, b, c] = lines[l]
-        if board[a] != ' ' and board[a] == board[b] and board[a] == board[c]:
-            if board[a] == "X":
+        if not board[a].isdigit() and board[a] == board[b] and board[a] == board[c]:
+            if board[a] == 'X':
                 return 1
             else:
                 return -1
+
+def min_value(board, lines, count):
+    if terminal(board, lines, count):
+        return utility(board, lines, count)
+
+    v = 1
+
+    for action in actions(board):
+        v = max(v, max_value(result(board, action), lines, count))
+    return v
+
+def max_value(board, lines, count):
+    if terminal(board, lines, count):
+        return utility(board, lines, count)
+
+    v = -1
+
+    for action in actions(board):
+        v = max(v, min_value(result(board, action), lines, count))
+    return v
+    
 
 def print_board(board):
     for l in range(0, 9, 3):
@@ -47,6 +77,8 @@ def print_board(board):
 def tictactoe():
 
     turn = 'X'
+    tictactoe_board = [str(i + 1) for i in range(9)]
+
 
     for count in range(9):
         # print(random.choice(actions(tictactoe_board)))
@@ -58,52 +90,36 @@ def tictactoe():
         # print_board( result( tictactoe_board, random.choice(actions(tictactoe_board)) ) )
         print(f"Your move {turn}.")
 
-        move = ''
+        if turn == 'X':
+            move = ''
 
-        while move == '':
-            move = int(input()) - 1
+            while move == '':
+                move = int(input()) - 1
 
-            if tictactoe_board[move] == ' ':
-                tictactoe_board[move] = turn
-            else:
-                move = ''
-                print('That place is already filled. Still your move.')
+                if tictactoe_board[move].isdigit():
+                    tictactoe_board[move] = turn
+                else:
+                    move = ''
+                    print('That place is already filled. Still your move.')
+        else:
+            tictactoe_board = result( tictactoe_board, random.choice(actions(tictactoe_board)) )
 
-        is_terminal = terminal(tictactoe_board, lines, count)
+        if terminal(tictactoe_board, lines, count):
+            winner = utility(tictactoe_board, lines, count)
 
-        if is_terminal is not None:
             print_board(tictactoe_board)
             print('\nGame Over.\n')
-            if is_terminal == 1 or is_terminal == -1:
+            if winner == 1 or winner == -1:
                 print(f'**** {turn} won ****')    
             else:         
                 print('Tie game.')
             break
-
-        # check for win
-        # if count >= 5:
-        #     for l in range(8):
-        #         [a, b, c] = lines[l]
-        #         if tictactoe_board[a] != ' ' and tictactoe_board[a] == tictactoe_board[b] and tictactoe_board[a] == tictactoe_board[c]:
-        #             print_board(tictactoe_board)
-        #             print("\nGame Over.\n")                
-        #             print(f"**** {turn} won ****")                
-        #             break
-        #     else:
-        #         # check if the board is full
-        #         if count == 8:
-        #             print_board(tictactoe_board)
-        #             print("\nGame Over.\n")                
-        #             print("Tie Game")
-        #             break
-        #         continue
-        #     break
     
     # play again?
     restart = input("Do want to play Again? (y/n) > ")
     if restart.lower().strip() == 'y':  
-        for sn in range(len(tictactoe_board)):
-            tictactoe_board[sn] = ' '
+        # for sn in range(len(tictactoe_board)):
+        #     tictactoe_board[sn] = ' '
         tictactoe()
 
 tictactoe()
