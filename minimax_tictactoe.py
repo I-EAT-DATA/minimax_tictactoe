@@ -51,17 +51,17 @@ def min_value(board, lines, count):
     if terminal(board, lines, count):
         return utility(board, lines, count)
 
-    v = 1
+    v = float('inf')
 
     for action in actions(board):
-        v = max(v, max_value(result(board, action), lines, count))
+        v = min(v, max_value(result(board, action), lines, count))
     return v
 
 def max_value(board, lines, count):
     if terminal(board, lines, count):
         return utility(board, lines, count)
 
-    v = -1
+    v = -float('inf')
 
     for action in actions(board):
         v = max(v, min_value(result(board, action), lines, count))
@@ -81,13 +81,9 @@ def tictactoe():
 
 
     for count in range(9):
-        # print(random.choice(actions(tictactoe_board)))
-        # print(player(tictactoe_board))
-        
         turn = player(tictactoe_board)
 
         print_board(tictactoe_board)
-        # print_board( result( tictactoe_board, random.choice(actions(tictactoe_board)) ) )
         print(f"Your move {turn}.")
 
         if turn == 'X':
@@ -102,7 +98,25 @@ def tictactoe():
                     move = ''
                     print('That place is already filled. Still your move.')
         else:
+
+            # best_action = 0
+            # best_v = 1
+
+            # for action in actions(tictactoe_board):
+            #     min_result = min(best_v, max_value(result(tictactoe_board, action), lines, count))
+            #     if min_result < best_v:
+            #         best_action = action
+
+            v = float('inf')
+            best_action = None
+            for action in actions(tictactoe_board):
+                v = min(v, max_value(result(tictactoe_board, action), lines, count))
+                print(v)
+
+            print(f'\n Min value: {v}\n')
+
             tictactoe_board = result( tictactoe_board, random.choice(actions(tictactoe_board)) )
+
 
         if terminal(tictactoe_board, lines, count):
             winner = utility(tictactoe_board, lines, count)
