@@ -77,6 +77,10 @@ def print_board(board):
 # gameplay 
 def tictactoe():
 
+    print("Do you want to play as 'X' or 'O'?")
+    human = 'X' if input().lower().strip() == 'x' else 'O'
+    print(human)
+
     turn = 'X'
     tictactoe_board = [str(i + 1) for i in range(9)]
 
@@ -84,10 +88,10 @@ def tictactoe():
     for count in range(9):
         turn = player(tictactoe_board)
 
-        print_board(tictactoe_board)
         print(f"Your move {turn}.")
+        print_board(tictactoe_board)
 
-        if turn == 'O':
+        if turn == human:
             move = ''
 
             while move == '':
@@ -98,15 +102,8 @@ def tictactoe():
                 else:
                     move = ''
                     print('That place is already filled. Still your move.')
-        else:
-
-            # best_action = 0
-            # best_v = 1
-
-            # for action in actions(tictactoe_board):
-            #     min_result = min(best_v, max_value(result(tictactoe_board, action), lines, count))
-            #     if min_result < best_v:
-            #         best_action = action
+        elif turn == 'X':
+            # max player
 
             v = -float('inf')
             best_action = None
@@ -117,18 +114,31 @@ def tictactoe():
                 if min_v > v:
                     v = min_v
                     best_action = action
-                     
 
-            print(f'\n Max value: {v}\n')
-
+            # print(f'\n Max value: {v}\n')
             # tictactoe_board = result( tictactoe_board, random.choice(actions(tictactoe_board)) )
+
+            tictactoe_board = result( tictactoe_board, best_action )
+        else:
+            # min player
+
+            v = float('inf')
+            best_action = None
+
+            for action in actions(tictactoe_board):
+                max_v = max_value(result(tictactoe_board, action), lines)
+
+                if max_v < v:
+                    v = max_v
+                    best_action = action
+
             tictactoe_board = result( tictactoe_board, best_action )
 
 
         if terminal(tictactoe_board, lines):
             winner = utility(tictactoe_board, lines)
 
-            print_board(tictactoe_board)
+            # print_board(tictactoe_board)
             print('\nGame Over.\n')
             if winner == 1 or winner == -1:
                 print(f'**** {turn} won ****')    
@@ -139,8 +149,6 @@ def tictactoe():
     # play again?
     restart = input("Do want to play Again? (y/n) > ")
     if restart.lower().strip() == 'y':  
-        # for sn in range(len(tictactoe_board)):
-        #     tictactoe_board[sn] = ' '
         tictactoe()
 
 tictactoe()
