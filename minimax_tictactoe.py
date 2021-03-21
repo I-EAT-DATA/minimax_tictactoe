@@ -23,9 +23,6 @@ def result(board, action):
     return result
 
 def terminal(board, lines):
-    # all squares are filled
-    if len([sq for sq in board if sq.isdigit()]) == 0:
-        return True
 
     # somebody won
     for l in range(8):
@@ -33,11 +30,11 @@ def terminal(board, lines):
         if not board[a].isdigit() and board[a] == board[b] and board[a] == board[c]:
             return True
 
-def utility(board, lines):
     # all squares are filled
-    
     if len([sq for sq in board if sq.isdigit()]) == 0:
-        return 0
+        return True
+
+def utility(board, lines):
 
     # somebody won
     for l in range(8):
@@ -48,7 +45,12 @@ def utility(board, lines):
             else:
                 return -1
 
+    # all squares are filled
+    if len([sq for sq in board if sq.isdigit()]) == 0:
+        return 0
+
 def min_value(board, lines):
+    # global best_min_v
     if terminal(board, lines):
         return utility(board, lines)
 
@@ -56,6 +58,8 @@ def min_value(board, lines):
 
     for action in actions(board):
         v = min(v, max_value(result(board, action), lines))
+        # if v < best_min_v:
+        #     break
     return v
 
 def max_value(board, lines):
@@ -109,13 +113,13 @@ def tictactoe():
             best_action = None
             for action in actions(tictactoe_board):
                 min_v = min_value(result(tictactoe_board, action), lines)
-                # min_v = max(v, min_value(result(tictactoe_board, action), lines))
-                # print(v)
+                # min_v = max(best_min_v, min_value(result(tictactoe_board, action), lines))
+                print(v)
                 if min_v > v:
                     v = min_v
                     best_action = action
 
-            # print(f'\n Max value: {v}\n')
+            # print(f'\n Max value: {best_min_v}\n')
             # tictactoe_board = result( tictactoe_board, random.choice(actions(tictactoe_board)) )
 
             tictactoe_board = result( tictactoe_board, best_action )
@@ -138,7 +142,7 @@ def tictactoe():
         if terminal(tictactoe_board, lines):
             winner = utility(tictactoe_board, lines)
 
-            # print_board(tictactoe_board)
+            print_board(tictactoe_board)
             print('\nGame Over.\n')
             if winner == 1 or winner == -1:
                 print(f'**** {turn} won ****')    
