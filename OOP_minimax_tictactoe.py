@@ -73,7 +73,9 @@ class MinimaxTictactoe:
         v = float('inf')
 
         for action in self.actions(board):
-            v = min(v, self.max_value(self.result(board, action), lines))
+            max_v = self.max_value(self.result(board, action), lines)
+            v = min(v, max_v)
+            self.best_max_v = min(v, max_v)
             if v < self.best_min_v:
                 break
         return v
@@ -85,7 +87,9 @@ class MinimaxTictactoe:
         v = -float('inf')
 
         for action in self.actions(board):
-            v = max(v, self.min_value(self.result(board, action), lines))
+            min_v = self.min_value(self.result(board, action), lines)
+            v = max(v, min_v)
+            self.best_min_v = max(v, min_v)
             if v > self.best_max_v:
                 break
         return v
@@ -101,6 +105,7 @@ class MinimaxTictactoe:
 
         print("Do you want to play as 'X' or 'O'?")
         human = 'X' if input().lower().strip() == 'x' else 'O'
+        # human = 'O'
 
         turn = 'X'
         tictactoe_board = [str(i + 1) for i in range(9)]
@@ -128,13 +133,13 @@ class MinimaxTictactoe:
 
                 start = time.time()
 
-                self.best_min_v = -float('inf')
+                local_best_min_v = -float('inf')
                 best_action = None
                 for action in self.actions(tictactoe_board):
                     min_v = self.min_value(self.result(tictactoe_board, action), self.lines)
                     print(self.best_min_v)
-                    if min_v > self.best_min_v:
-                        self.best_min_v = min_v
+                    if min_v > local_best_min_v:
+                        local_best_min_v = min_v
                         best_action = action
 
                 tictactoe_board = self.result( tictactoe_board, best_action )
@@ -143,14 +148,14 @@ class MinimaxTictactoe:
             else:
                 # min player
 
-                self.best_max_v = float('inf')
+                local_best_max_v = float('inf')
                 best_action = None
 
                 for action in self.actions(tictactoe_board):
                     max_v = self.max_value(self.result(tictactoe_board, action), self.lines)
 
-                    if max_v < self.best_max_v:
-                        self.best_max_v = max_v
+                    if max_v < local_best_max_v:
+                        local_best_max_v = max_v
                         best_action = action
 
                 tictactoe_board = self.result( tictactoe_board, best_action )
