@@ -166,10 +166,12 @@ class MinimaxTictactoe:
 
                 self.print_board(tictactoe_board)
                 print('\nGame Over.\n')
-                if winner == 1 or winner == -1:
-                    print(f'**** {turn} won ****')    
-                else:         
+
+                if winner == 0:
                     print('Tie game.')
+                else:
+                    print(f'**** {turn} won ****')
+                    
                 break
         
         # play again?
