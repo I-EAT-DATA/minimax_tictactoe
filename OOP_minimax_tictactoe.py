@@ -1,6 +1,6 @@
 ''' 
 Todo:
-    - Bookeep the actual value for both best_min_v (high as possible) and best_max_v (low as possible) for better alpha beta pruning
+    - 
 
 Done:
     - 
@@ -171,7 +171,7 @@ class MinimaxTictactoe:
                     print('Tie game.')
                 else:
                     print(f'**** {turn} won ****')
-                    
+
                 break
         
         # play again?
