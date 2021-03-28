@@ -137,7 +137,7 @@ class MinimaxTictactoe:
                 best_action = None
                 for action in self.actions(tictactoe_board):
                     min_v = self.min_value(self.result(tictactoe_board, action), self.lines)
-                    print(self.best_min_v)
+                    print(min_v)
                     if min_v > local_best_min_v:
                         local_best_min_v = min_v
                         best_action = action
@@ -145,6 +145,8 @@ class MinimaxTictactoe:
                 tictactoe_board = self.result( tictactoe_board, best_action )
 
                 print(f'Calculation time: {time.time() - start}')
+
+                print(self.best_min_v)
             else:
                 # min player
 
